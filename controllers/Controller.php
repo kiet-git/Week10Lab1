@@ -10,6 +10,7 @@ class Controller {
     public function __construct()
     {
         // get access to the post reqest arr
+        // get super globals for POST/GET/FILES
         $this->req = $_POST;
         $this->params = $_GET;
         $this->files = $_FILES;

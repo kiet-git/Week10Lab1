@@ -13,9 +13,11 @@ class PostsController extends Controller {
     public function getPosts() {
         $posts = new Post($this->conn);
         if($posts->fetchPosts($this->params['offset'], $this->params['limit'])->success()) {
-            $num_btn = $posts->getNumBtn();
-            var_dump($num_btn);
+            
+            $num_btns = $posts->getNumBtn();
+            var_dump($num_btns);
             $posts = $posts->getPosts();
+            
             include "views/posts.php";
         } else {
             echo "error";
