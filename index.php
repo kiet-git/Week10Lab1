@@ -3,7 +3,7 @@ include "core/init.php";
 include "core/DB.php";
 //include "core/Router.php";
 DB::createInstance();
-DB::connect("localhost", "root", "", "2022mvc2");
+DB::connect("localhost", "root", "root", "2022mvc1");
 
 define("ROOT", substr($_SERVER['PHP_SELF'], 0, -9));
 define("PUBLIC_ROOT", ROOT . "public/");

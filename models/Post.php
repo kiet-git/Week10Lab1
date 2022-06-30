@@ -11,11 +11,23 @@ class Post {
     public $post = [];
     public $posts = [];
     public $errors = [];
+    public $num_posts = 0;
+    public $limit;
+    public $num_btn;
 
     // constructor (inject DB conn)
     public function __construct($conn) {
         $this->conn = $conn;
+        $this->countPosts();
     }
+
+
+    public function countPosts() {
+        $sql = "SELECT COUNT(id) AS num_posts FROM posts";
+        $stmt = $this->conn->query($sql);
+        $this->num_posts = $stmt->fetch_assoc()['num_posts'];
+    }
+
     // Post methods
     // "setter" for the post prop
     public function fetchPost($id) {
@@ -36,7 +48,18 @@ class Post {
         return $this;
     }
 
+    public function calNumBtn() {
+        $this->num_btn = ceil($this->num_posts/$this->limit);
+    }
+
+    public function getNumBtn() {
+        return $this->num_btn;
+    }
+
     public function fetchPosts($offset = 0, $limit = 12) {
+        $params = [$offset, $limit];
+        $this->limit = $limit;
+        $this->calNumBtn();
         $sql = "SELECT posts.*, users.username, COUNT(comments.id) AS num_comments
                 FROM posts 
                 JOIN users ON users.id = posts.user_id
@@ -44,7 +67,7 @@ class Post {
                 GROUP BY posts.id
                 LIMIT ?,?";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("ii", $offset, $limit);
+        $stmt->bind_param("ii", ...$params);
         $stmt->execute();
         $results = $stmt->get_result();
         if($results->num_rows === 0) {
